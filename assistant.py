@@ -38,7 +38,8 @@ def playSound(filename):
            filename (String): The filename of the file in the sounds folder.
     """
     FNULL = open(os.devnull, 'w')
-    subprocess.call(["play", "sounds/" + filename], stdout=FNULL, stderr=subprocess.STDOUT)
+    path = os.path.dirname(os.path.realpath(__file__)) + "/sounds/" + filename
+    subprocess.call(["play", path], stdout=FNULL, stderr=subprocess.STDOUT)
 
 
 def process_event(event):
