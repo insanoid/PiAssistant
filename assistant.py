@@ -37,7 +37,8 @@ def playSound(filename):
        Args:
            filename (String): The filename of the file in the sounds folder.
     """
-    subprocess.call(["play", "sounds/" + filename])
+    FNULL = open(os.devnull, 'w')
+    subprocess.call(["play", "sounds/" + filename], stdout=FNULL, stderr=subprocess.STDOUT)
 
 
 def process_event(event):
@@ -51,26 +52,17 @@ def process_event(event):
     """
     if event.type == EventType.ON_START_FINISHED:
         playSound('prompt.mp3') # Need a new sound for start.
-        print()
 
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         playSound('prompt.mp3') # Prompt when conversation started.
-        print()
-
-    if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
-            event.args and event.args['with_follow_on_turn'] == True):
-        playSound('prompt.mp3')  # There is a follow-up the device is waiting for.
-        print()
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         playSound('finished.aiff') # Everything ended, let the user know!
-        print()
 
     if (event.type == EventType.ON_ASSISTANT_ERROR or
             event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT):
         playSound('error.aiff') # Failure of any kind.
-        print()
 
 
 def main():
@@ -91,6 +83,7 @@ def main():
 
     with Assistant(credentials) as assistant:
         for event in assistant.start():
+            print(event)
             process_event(event)
 
 
